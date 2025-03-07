@@ -1,0 +1,47 @@
+name: JoeSandboxV2
+version: 4.5.0.stable1
+description: Retrieves and displays existing Joe Sandbox analysis results in IRJsonFixed format. 
+ This service searches for existing analyses by file hash and presents the results in Assemblyline.
+
+accepts: .*
+rejects: empty|metadata/.*
+
+stage: CORE
+category: External
+
+file_required: true
+timeout: 3600
+disable_cache: false
+
+enabled: true
+
+heuristics:
+  - description: Joe Sandbox detected the file as malicious
+    filetype: "*"
+    heur_id: 1
+    name: Malicious
+    score: 1000
+    
+  - description: Joe Sandbox detected the file as suspicious
+    filetype: "*"
+    heur_id: 2
+    name: Suspicious
+    score: 500
+    
+  - description: Joe Sandbox detected the file as clean or unknown
+    filetype: "*"
+    heur_id: 3
+    name: Clean/Unknown
+    score: 0
+
+docker_config:
+  image: ghcr.io/boredchilada/al4-joesandbox:latest
+  cpu_cores: 1
+  ram_mb: 1024
+  allow_internet_access: true
+
+config:
+  # API key for Joe Sandbox
+  api_key: ""
+  # API URL for Joe Sandbox
+  api_url: 'https://www.joesandbox.com/api/'
