@@ -1,7 +1,11 @@
 name: JoeSandboxV2
-version: 4.5.0.stable1
-description: Retrieves and displays existing Joe Sandbox analysis results in IRJsonFixed format. 
- This service searches for existing analyses by file hash and presents the results in Assemblyline.
+version: $SERVICE_TAG
+description: >-
+  Shows Joe Sandbox results for a file. The service looks up the file's SHA-256 on Joe
+  Sandbox and reports the newest finished analysis: verdict, behaviour signatures, network
+  activity and dropped files. Lookups never upload the file. Uploading is off by default
+  and can be enabled per submission with submit_to_joesandbox; on Joe Sandbox Cloud Basic
+  uploaded files and their reports are public and uploads count against the account quota.
 
 accepts: .*
 rejects: empty|metadata/.*
@@ -10,38 +14,75 @@ stage: CORE
 category: External
 
 file_required: true
-timeout: 3600
+# Covers config.submission_timeout plus the report download when uploading is enabled.
+timeout: 1500
 disable_cache: false
 
 enabled: true
-
-heuristics:
-  - description: Joe Sandbox detected the file as malicious
-    filetype: "*"
-    heur_id: 1
-    name: Malicious
-    score: 1000
-    
-  - description: Joe Sandbox detected the file as suspicious
-    filetype: "*"
-    heur_id: 2
-    name: Suspicious
-    score: 500
-    
-  - description: Joe Sandbox detected the file as clean or unknown
-    filetype: "*"
-    heur_id: 3
-    name: Clean/Unknown
-    score: 0
-
-docker_config:
-  image: ghcr.io/boredchilada/al4-joesandbox:latest
-  cpu_cores: 1
-  ram_mb: 1024
-  allow_internet_access: true
+is_external: true
+privileged: false
 
 config:
-  # API key for Joe Sandbox
+  # Joe Sandbox API key. Set it in AssemblyLine's service settings, never in this file.
   api_key: ""
-  # API URL for Joe Sandbox
-  api_url: 'https://www.joesandbox.com/api/'
+  api_url: "https://www.joesandbox.com/api/"
+  # Link shown in results; {webid} is replaced by the analysis ID.
+  report_url: "https://www.joesandbox.com/analysis/{webid}/0/html"
+  # Seconds to wait for an uploaded file's analysis, and the polling interval.
+  submission_timeout: 1200
+  poll_interval: 30
+  # Comma-separated Joe Sandbox systems for uploads (names from the account's system list).
+  # Empty lets Joe Sandbox choose; Cloud Basic needs an explicit system.
+  systems: "w10x64"
+
+submission_params:
+  # Upload the file when Joe Sandbox has no analysis of it. Off by default.
+  - name: submit_to_joesandbox
+    type: bool
+    default: false
+    value: false
+  # How deep to look up extracted files: 0 = only the submitted file, 1 = also files extracted
+  # from it, and so on. 6 covers everything AssemblyLine extracts by default.
+  - name: lookup_depth
+    type: int
+    value: 6
+    default: 6
+  # Which extracted files to look up: a regular expression over AssemblyLine file types, matched
+  # from the start like a manifest's accepts (for example "executable/.*|document/.*").
+  # The submitted file is always looked up. Default ".*": every type.
+  - name: extracted_types
+    type: str
+    value: ".*"
+    default: ".*"
+  # Uploading extracted files: false (default) = extracted files are only looked up, even when
+  # uploading is enabled; true = extracted files in the lookup scope are uploaded too, with the
+  # same upload settings as the submitted file. Uploaded files are public.
+  - name: upload_extracted
+    type: bool
+    value: false
+    default: false
+
+heuristics:
+  - heur_id: 1
+    name: Malicious
+    score: 1000
+    filetype: ".*"
+    description: Joe Sandbox classified the file as malicious.
+
+  - heur_id: 2
+    name: Suspicious
+    score: 500
+    filetype: ".*"
+    description: Joe Sandbox classified the file as suspicious.
+
+  - heur_id: 3
+    name: Clean/Unknown
+    score: 0
+    filetype: ".*"
+    description: Joe Sandbox classified the file as clean or could not classify it.
+
+docker_config:
+  image: ghcr.io/boredchilada/al4-joesandbox:$SERVICE_TAG
+  cpu_cores: 0.25
+  ram_mb: 512
+  allow_internet_access: true

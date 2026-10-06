@@ -1,2 +1,6 @@
-requests
-assemblyline-service-utilities
+# Framework packages: unpinned, provided by the base image.
+assemblyline
+assemblyline-v4-service
+# Third-party packages: pinned exactly.
+# jbxapi: Joe Security's official Joe Sandbox API client (MIT).
+jbxapi==3.25.0

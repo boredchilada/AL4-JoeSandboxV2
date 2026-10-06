@@ -1,32 +1,31 @@
-FROM cccs/assemblyline-v4-service-base:stable
+ARG branch=stable
+FROM cccs/assemblyline-v4-service-base:$branch
 
-# Python path to the service class
-ENV SERVICE_PATH joesandbox.JoeSandboxV2
+# Python path to the service class: <package>.<module>.<Class>
+ENV SERVICE_PATH=joesandboxv2.service.JoeSandboxV2
 
-# Install required dependencies
+# System packages (as root). pkglist.txt may be empty.
 USER root
-
-# Install system dependencies needed for building Python packages
+COPY pkglist.txt /tmp/setup/
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    python3-dev \
-    libffi-dev \
-    libfuzzy-dev \
-    && rm -rf /var/lib/apt/lists/*
+    $(grep -vE "^\s*(#|$)" /tmp/setup/pkglist.txt | tr "\n" " ") && \
+    rm -rf /tmp/setup/pkglist.txt /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt && rm -rf ~/.cache/pip
+# Python packages (as the unprivileged runtime user). --chown keeps the build independent of
+# host file modes: a 0640 checkout would otherwise be unreadable to the assemblyline user.
+USER assemblyline
+COPY --chown=assemblyline:assemblyline requirements.txt requirements.txt
+RUN pip install --no-cache-dir --user --requirement requirements.txt && \
+    rm -rf ~/.cache/pip
 
-# Copy service code
 WORKDIR /opt/al_service
-COPY . .
+COPY --chown=assemblyline:assemblyline . .
 
-# Set proper permissions
-RUN chown -R assemblyline:assemblyline /opt/al_service/
-RUN chmod -R 755 /opt/al_service/
+# Stamp the release version into the manifest (CCCS pattern). CI passes the git tag.
+ARG version=4.7.0.dev0
+USER root
+RUN sed -i -e "s/\$SERVICE_TAG/$version/g" service_manifest.yml && \
+    chown -R assemblyline:assemblyline /opt/al_service
 
-# Switch to assemblyline user
 USER assemblyline

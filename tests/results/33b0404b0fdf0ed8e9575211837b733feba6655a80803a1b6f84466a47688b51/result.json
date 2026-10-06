@@ -1,0 +1,223 @@
+{
+  "extra": {
+    "drop_file": false,
+    "score": 1000,
+    "sections": [
+      {
+        "auto_collapse": false,
+        "body": {
+          "analysed_at": "2026-01-02T03:04:05+01:00",
+          "analysis_id": "1000001",
+          "confidence": "4/5",
+          "report": "https://www.joesandbox.com/analysis/1000001/0/html",
+          "score": "88/100",
+          "system": "Windows 10 x64 22H2",
+          "uploaded_by_this_service": false,
+          "verdict": "malicious"
+        },
+        "body_config": {},
+        "body_format": "KEY_VALUE",
+        "classification": "TLP:C",
+        "depth": 0,
+        "heuristic": {
+          "attack_ids": [],
+          "frequency": 1,
+          "heur_id": 1,
+          "score": 1000,
+          "score_map": {},
+          "signatures": {}
+        },
+        "promote_to": null,
+        "tags": {},
+        "title_text": "Joe Sandbox analysis",
+        "zeroize_on_tag_safe": false
+      },
+      {
+        "auto_collapse": false,
+        "body": [
+          {
+            "signature": "Antivirus detection for submitted file"
+          },
+          {
+            "signature": "Creates an autostart registry key"
+          },
+          {
+            "signature": "Connects to a known command and control server"
+          }
+        ],
+        "body_config": {
+          "column_order": [
+            "signature"
+          ]
+        },
+        "body_format": "TABLE",
+        "classification": "TLP:C",
+        "depth": 0,
+        "heuristic": null,
+        "promote_to": null,
+        "tags": {
+          "dynamic": {
+            "signature": {
+              "name": [
+                "Antivirus detection for submitted file",
+                "Creates an autostart registry key",
+                "Connects to a known command and control server"
+              ]
+            }
+          }
+        },
+        "title_text": "Joe Sandbox behaviour signatures",
+        "zeroize_on_tag_safe": false
+      },
+      {
+        "auto_collapse": false,
+        "body": [
+          {
+            "malicious": true,
+            "resolved_ip": "192.0.2.10",
+            "type": "domain",
+            "value": "c2.example.com"
+          },
+          {
+            "malicious": false,
+            "resolved_ip": "",
+            "type": "domain",
+            "value": "cdn.example.net"
+          },
+          {
+            "malicious": true,
+            "resolved_ip": "",
+            "type": "ip",
+            "value": "192.0.2.10"
+          },
+          {
+            "malicious": true,
+            "resolved_ip": "",
+            "type": "uri",
+            "value": "http://c2.example.com/gate.php"
+          }
+        ],
+        "body_config": {
+          "column_order": [
+            "type",
+            "value",
+            "malicious",
+            "resolved_ip"
+          ]
+        },
+        "body_format": "TABLE",
+        "classification": "TLP:C",
+        "depth": 0,
+        "heuristic": null,
+        "promote_to": null,
+        "tags": {
+          "network": {
+            "dynamic": {
+              "domain": [
+                "c2.example.com",
+                "cdn.example.net"
+              ],
+              "ip": [
+                "192.0.2.10"
+              ],
+              "uri": [
+                "http://c2.example.com/gate.php"
+              ]
+            }
+          }
+        },
+        "title_text": "Network activity observed by Joe Sandbox",
+        "zeroize_on_tag_safe": false
+      },
+      {
+        "auto_collapse": false,
+        "body": [
+          {
+            "malicious": true,
+            "path": "C:\\Users\\user\\AppData\\Local\\Temp\\payload.exe",
+            "sha256": "abcdef0000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "malicious": false,
+            "path": "C:\\Users\\user\\Desktop\\README.txt",
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        ],
+        "body_config": {
+          "column_order": [
+            "path",
+            "malicious",
+            "sha256"
+          ]
+        },
+        "body_format": "TABLE",
+        "classification": "TLP:C",
+        "depth": 0,
+        "heuristic": null,
+        "promote_to": null,
+        "tags": {},
+        "title_text": "Files dropped during the Joe Sandbox analysis",
+        "zeroize_on_tag_safe": false
+      }
+    ]
+  },
+  "files": {
+    "extracted": [],
+    "supplementary": []
+  },
+  "results": {
+    "heuristics": [
+      {
+        "attack_ids": [],
+        "heur_id": 1,
+        "signatures": []
+      }
+    ],
+    "tags": {
+      "dynamic.signature.name": [
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "Antivirus detection for submitted file"
+        },
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "Connects to a known command and control server"
+        },
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "Creates an autostart registry key"
+        }
+      ],
+      "network.dynamic.domain": [
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "c2.example.com"
+        },
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "cdn.example.net"
+        }
+      ],
+      "network.dynamic.ip": [
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "192.0.2.10"
+        }
+      ],
+      "network.dynamic.uri": [
+        {
+          "heur_id": null,
+          "signatures": [],
+          "value": "http://c2.example.com/gate.php"
+        }
+      ]
+    },
+    "temp_submission_data": {}
+  }
+}

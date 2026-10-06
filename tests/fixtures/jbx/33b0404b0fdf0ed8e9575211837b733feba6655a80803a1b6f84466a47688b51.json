@@ -1,0 +1,119 @@
+{
+ "search": [
+  {
+   "webid": "1000001"
+  },
+  {
+   "webid": "1000002"
+  }
+ ],
+ "info": {
+  "1000002": {
+   "webid": "1000002",
+   "status": "running",
+   "time": "2026-01-03T10:00:00+01:00"
+  },
+  "1000001": {
+   "webid": "1000001",
+   "status": "finished",
+   "detection": "malicious",
+   "score": 88,
+   "time": "2026-01-02T03:04:05+01:00"
+  }
+ },
+ "report": {
+  "1000001": {
+   "analysis": {
+    "version": "44.0.0 Smoke Quartz",
+    "reporttype": "IR",
+    "errors": null,
+    "id": 1000001,
+    "product": "CloudBasic",
+    "starttime": "03:04:05",
+    "startdate": "02/01/2026",
+    "sample": "known_to_joesandbox.txt",
+    "url": "",
+    "cookbook": "default.jbs",
+    "system": "Windows 10 x64 22H2",
+    "arch": "WINDOWS",
+    "hashes": {
+     "md5": "24ddce73577a680b7767981f43976381",
+     "sha1": "a838390af856086509cc39261b5aedfcc92ea4ac",
+     "sha256": "33b0404b0fdf0ed8e9575211837b733feba6655a80803a1b6f84466a47688b51"
+    },
+    "filetype": "",
+    "detection": {
+     "malicious": true,
+     "suspicious": false,
+     "clean": false,
+     "unknown": false,
+     "score": 88,
+     "minscore": 0,
+     "maxscore": 100
+    },
+    "confidence": {
+     "score": 4,
+     "minscore": 0,
+     "maxscore": 5,
+     "expertadviceneeded": false
+    },
+    "dropped": {
+     "file": [
+      {
+       "name": "C:\\Users\\user\\AppData\\Local\\Temp\\payload.exe",
+       "malicious": true,
+       "md5": "00000000000000000000000000000000",
+       "sha1": "1111111111111111111111111111111111111111",
+       "sha256": "ABCDEF0000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+       "name": "C:\\Users\\user\\Desktop\\README.txt",
+       "malicious": false,
+       "md5": "22222222222222222222222222222222",
+       "sha1": "3333333333333333333333333333333333333333",
+       "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+     ]
+    },
+    "contacted": {
+     "ips": {
+      "ip": {
+       "@malicious": "true",
+       "$": "192.0.2.10"
+      }
+     },
+     "domains": {
+      "domain": [
+       {
+        "name": "c2.example.com",
+        "malicious": true,
+        "ip": "192.0.2.10"
+       },
+       {
+        "name": "cdn.example.net",
+        "malicious": false,
+        "ip": "unknown"
+       }
+      ]
+     },
+     "urls": {
+      "url": [
+       {
+        "name": "http://c2.example.com/gate.php",
+        "malicious": "true",
+        "ip": "unknown"
+       }
+      ]
+     }
+    },
+    "signatures": {
+     "signare": [
+      "Antivirus detection for submitted file",
+      "Creates an autostart registry key",
+      "Connects to a known command and control server"
+     ]
+    }
+   }
+  }
+ }
+}
