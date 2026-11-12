@@ -28,9 +28,16 @@ config:
   api_url: "https://www.joesandbox.com/api/"
   # Link shown in results; {webid} is replaced by the analysis ID.
   report_url: "https://www.joesandbox.com/analysis/{webid}/0/html"
-  # Seconds to wait for an uploaded file's analysis, and the polling interval.
+  # Seconds to wait for an uploaded file's analysis (60 to the service timeout minus 60), and
+  # the polling interval (5 to 300).
   submission_timeout: 1200
   poll_interval: 30
+  # Seconds before one Joe Sandbox API request times out (5 to 120), and how often the API
+  # client retries a failed request (0 to 10).
+  timeout: 60
+  retries: 3
+  # Seconds to pause lookups after the account's daily API request allowance is exhausted (0 to 86400).
+  quota_cooldown_seconds: 3600
   # Comma-separated Joe Sandbox systems for uploads (names from the account's system list).
   # Empty lets Joe Sandbox choose; Cloud Basic needs an explicit system.
   systems: "w10x64"
@@ -61,6 +68,12 @@ submission_params:
     type: bool
     value: false
     default: false
+  # Joe Sandbox systems for uploads from this submission, comma-separated (for example
+  # "w10x64,w11x64"). Empty uses the service setting systems. Only used when a file is uploaded.
+  - name: systems
+    type: str
+    value: ""
+    default: ""
 
 heuristics:
   - heur_id: 1
